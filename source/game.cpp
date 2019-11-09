@@ -1,5 +1,8 @@
 #include "libraryBindings.h"
 
+extern int resolutionX;
+extern int resolutionY;
+
 void CheckInput(int& x, int& y){
     if(IsKeyPressed(KEY_RIGHT)){
         x += 1;

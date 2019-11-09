@@ -1,3 +1,5 @@
+#include <string>
+
 class Color{
 public:
     unsigned char r;
@@ -11,7 +13,9 @@ void InitWindow(int resolutionX, int resolutionY, const char* windowTitle);
 void CloseWindow();
 bool WindowShouldClose();
 void DrawSquare(int posX, int posY, int width, const Color& c);
+void DrawLine(int startPosX, int startPosY, int endPosX, int endPosY, const Color& c);
 void DrawFPS(int posX, int posY);
+void DrawText(const std::string& text, int posX, int posY, int fontSize, const Color& c);
 void SetTargetFPS(int fps);
 void BeginDrawing();
 void EndDrawing();

@@ -35,8 +35,16 @@ void ClearBackground(const Color& c){
     Raylib::ClearBackground((Raylib::Color){c.r, c.g, c.b, c.a});
 }
 
+void DrawLine(int startPosX, int startPosY, int endPosX, int endPosY, const Color& c){
+    Raylib::DrawLine(startPosX, startPosY, endPosX, endPosY, (Raylib::Color){c.r, c.g, c.b, c.a});
+}
+
 void DrawFPS(int posX, int posY){
     Raylib::DrawFPS(posX, posY);
+}
+
+void DrawText(const std::string& text, int posX, int posY, int fontSize, const Color& c){
+    Raylib::DrawText(text.c_str(), posX, posY, fontSize, (Raylib::Color){c.r, c.g, c.b, c.a});
 }
 
 void DrawSquare(int posX, int posY, int width, const Color& c){

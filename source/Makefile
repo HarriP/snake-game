@@ -1,6 +1,6 @@
 .PHONY = all clean
 CC = x86_64-w64-mingw32-g++.exe
-FLAGS = -Wall -Wextra -O2
+FLAGS = -Wall -Wextra -O2 -static
 LIB ?= RAYLIB
 
 ifeq (${LIB},RAYLIB)
