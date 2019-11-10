@@ -28,32 +28,27 @@ int main(int argc, char** argv){
         if(strcmp(argv[i], "-resolution") == 0 && argc > i+2){
             resolutionX = atoi(argv[i+1]);
             resolutionY = atoi(argv[i+2]);
-            i += 3;
         }
         else if(strcmp(argv[i], "-targetFps") == 0 && argc > i+1){
             targetFps = atoi(argv[i+1]);
         }
         else if(strcmp(argv[i], "-snakeSpeed") == 0 && argc > i+1){
             snakeSpeed = atoi(argv[i+1]);
-            i += 2;
         }
         else if(strcmp(argv[i], "-snakeSquareSize") == 0 && argc > i+1){
             snakeSquareSize = atoi(argv[i+1]);
-            i += 2;
         }
         else if(strcmp(argv[i], "-keys") == 0 && argc > i+4){
             keyUp = argv[i+1][0];
             keyLeft = argv[i+2][0];
             keyDown = argv[i+3][0];
             keyRight = argv[i+4][0];
-            i += 5;
         }
         else if(strcmp(argv[i], "-keysNumeric") == 0 && argc > i+4){
             keyUp = argv[i+1][0];
             keyLeft = argv[i+2][0];
             keyDown = argv[i+3][0];
             keyRight = argv[i+4][0];
-            i += 5;
         }
     }
     InitWindow(resolutionX, resolutionY, "Snake");

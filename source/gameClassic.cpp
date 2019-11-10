@@ -72,13 +72,13 @@ public:
     int y;
     Pos() : x(0), y(0) {}
     Pos(int aX, int aY) : x(aX), y(aY) {}
-    bool operator==(const Pos& b){
+    bool operator==(const Pos& b) const{
         if(x == b.x && y == b.y){
             return true;
         }
         return false;
     }
-    bool operator!=(const Pos& b){
+    bool operator!=(const Pos& b) const{
         return !operator==(b);
     }
 };
@@ -152,9 +152,26 @@ public:
             DrawSquare(p.pos.x, p.pos.y, squareSize, p.color);
         }
     }
+    bool PosCollidesWithSnake(const Pos& pos){
+        for(SnakeBodyPiece& p : body){
+            if(pos == p.pos){
+                return true;
+            }
+        }
+        return false;
+    }
+    Pos RandomPosOutsideSnake(){
+        int tries = 0;
+        Pos pos = RandomPos();
+        while(PosCollidesWithSnake(pos) && tries < 20){
+            pos = RandomPos();
+            tries++;
+        }
+        return pos;
+    }
     bool CheckCollision(std::vector<SnakeBodyPiece>& foodList){
-        if(foodList.size() == 0){
-            foodList.push_back(SnakeBodyPiece(RandomPos(), Color(255, 0, 0, 255)));
+        if(foodList.size() < 3){
+            foodList.push_back(SnakeBodyPiece(RandomPosOutsideSnake(), Color(255, 0, 0, 255)));
         }
         for(int i=0; i<(int)foodList.size(); i++){
             if(body[0].pos == foodList[i].pos){
@@ -213,7 +230,7 @@ void Game(){
             }
         }
         else{
-            DrawText("Bummer! You lost.\nPress enter to play again."s, resolutionX/2-200, resolutionY/2, 40, Color(180, 0, 0, 255));
+            DrawText("Bummer! You lost.\nPress enter to play again."s, resolutionX/2-300, resolutionY/2-100, 40, Color(180, 0, 0, 255));
             if(IsKeyPressed(KEY_ENTER)){
                 // Restart game.
                 snake.Reset();
