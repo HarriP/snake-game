@@ -13,6 +13,7 @@ void InitWindow(int resolutionX, int resolutionY, const char* windowTitle);
 void CloseWindow();
 bool WindowShouldClose();
 void DrawSquare(int posX, int posY, int width, const Color& c);
+void DrawCircle(int centerX, int centerY, float radius, const Color& c);
 void DrawLine(int startPosX, int startPosY, int endPosX, int endPosY, const Color& c);
 void DrawFPS(int posX, int posY);
 void DrawText(const std::string& text, int posX, int posY, int fontSize, const Color& c);
@@ -22,6 +23,8 @@ void EndDrawing();
 void ClearBackground(const Color& c);
 bool IsKeyPressed(int key);
 bool IsKeyReleased(int key);
+bool IsKeyDown(int key);
+bool IsKeyUp(int key);
 
 // Raylib code
 // Keyboard keys

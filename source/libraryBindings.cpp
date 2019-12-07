@@ -35,10 +35,6 @@ void ClearBackground(const Color& c){
     Raylib::ClearBackground((Raylib::Color){c.r, c.g, c.b, c.a});
 }
 
-void DrawLine(int startPosX, int startPosY, int endPosX, int endPosY, const Color& c){
-    Raylib::DrawLine(startPosX, startPosY, endPosX, endPosY, (Raylib::Color){c.r, c.g, c.b, c.a});
-}
-
 void DrawFPS(int posX, int posY){
     Raylib::DrawFPS(posX, posY);
 }
@@ -51,12 +47,28 @@ void DrawSquare(int posX, int posY, int width, const Color& c){
     Raylib::DrawRectangle(posX, posY, width, width, (Raylib::Color){c.r, c.g, c.b, c.a}); // Second width acts as height to draw a square.
 }
 
+void DrawCircle(int centerX, int centerY, float radius, const Color& c){
+    Raylib::DrawCircle(centerX, centerY, radius, (Raylib::Color){c.r, c.g, c.b, c.a});
+}
+
+void DrawLine(int startPosX, int startPosY, int endPosX, int endPosY, const Color& c){
+    Raylib::DrawLine(startPosX, startPosY, endPosX, endPosY, (Raylib::Color){c.r, c.g, c.b, c.a});
+}
+
 bool IsKeyPressed(int key){
     return Raylib::IsKeyPressed(key);
 }
 
 bool IsKeyReleased(int key){
     return Raylib::IsKeyReleased(key);
+}
+
+bool IsKeyDown(int key){
+    return Raylib::IsKeyDown(key);
+}
+
+bool IsKeyUp(int key){
+    return Raylib::IsKeyUp(key);
 }
 #elif defined(SDL2)
 #endif
