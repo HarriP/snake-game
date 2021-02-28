@@ -1,6 +1,7 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <random>
 #include "libraryBindings.h"
 
 extern int resolutionX;
@@ -14,6 +15,7 @@ extern int keyUp;
 extern int keyLeft;
 extern int keyDown;
 extern int keyRight;
+extern std::mt19937_64 rndGen;
 
 enum class Direction{
     None,
@@ -86,8 +88,8 @@ public:
 Pos RandomPos(){
     int squaresX = (resolutionX - 2 * snakeBodySize) / snakeBodySize;
     int squaresY = (resolutionY - 2 * snakeBodySize) / snakeBodySize;
-    int randomX = rand() % squaresX * snakeBodySize + snakeBodySize;
-    int randomY = rand() % squaresY * snakeBodySize + snakeBodySize;
+    int randomX = rndGen() % squaresX * snakeBodySize + snakeBodySize;
+    int randomY = rndGen() % squaresY * snakeBodySize + snakeBodySize;
     return Pos(randomX, randomY);
 }
 
@@ -202,7 +204,7 @@ public:
     }
 };
 
-void Game(){
+void Game(int argc, char** argv){
     std::queue<Direction> playerCommands;
     Snake snake(snakeSpeed, snakeBodySize);
     std::vector<SnakeBodyPiece> foodList;

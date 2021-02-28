@@ -1,1 +1,1 @@
-void Game();
+void Game(int argc, char** argv);

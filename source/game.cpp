@@ -1,6 +1,8 @@
 #include <string>
 #include <vector>
 #include <queue>
+#include <random>
+#include <cstring>
 #include <cmath>
 #include "libraryBindings.h"
 
@@ -13,10 +15,12 @@ extern int snakeSpeed;
 extern int snakeBodySize;
 extern int lengthGainPerFood;
 extern int foodAmount;
+extern int collisionSnakeLengthIgnored;
 extern int keyUp;
 extern int keyLeft;
 extern int keyDown;
 extern int keyRight;
+extern std::mt19937_64 rndGen;
 
 enum class Direction{
     None,
@@ -83,14 +87,15 @@ public:
 };
 
 Pos RandomPos(){
-    float randomX = rand() % (resolutionX - snakeBodySize * 3) + snakeBodySize + snakeBodySize / 2;
-    float randomY = rand() % (resolutionY - snakeBodySize * 3) + snakeBodySize + snakeBodySize / 2;
+    float randomX = rndGen() % (resolutionX - borderPadding * 2 - snakeBodySize) + borderPadding + snakeBodySize / 2;
+    float randomY = rndGen() % (resolutionY - borderPadding * 2 - snakeBodySize) + borderPadding + snakeBodySize / 2;
     return Pos(randomX, randomY);
 }
 
 Pos RandomInitPos(){
-    float randomX = rand() % (resolutionX/2) + snakeBodySize + snakeBodySize / 2;
-    float randomY = rand() % (resolutionY - snakeBodySize * 3) + snakeBodySize + snakeBodySize / 2;
+    // resolutionX / 2 is because snake moves right initially, so it doesn't hit the wall when starting.
+    float randomX = rndGen() % (resolutionX / 2) + borderPadding + snakeBodySize / 2;
+    float randomY = rndGen() % (resolutionY - borderPadding * 2 - snakeBodySize) + borderPadding + snakeBodySize / 2;
     return Pos(randomX, randomY);
 }
 
@@ -168,7 +173,7 @@ public:
                 i--;
             }
         }
-        for(int i=bodySize; i<(int)body.size(); i++){
+        for(int i=collisionSnakeLengthIgnored; i<(int)body.size(); i++){
             if(body[0].pos.WithinRange(body[i].pos, bodySize)){
                 return true;
             }
@@ -183,7 +188,18 @@ public:
     }
 };
 
-void Game(){
+void Game(int argc, char** argv){
+    {
+        bool speedSet = false;
+        for(int i=1; i<argc; i++){
+            if(std::strcmp(argv[i], "-snakeSpeed") == 0 && argc > i+1){
+                speedSet = true;
+            }
+        }
+        if(!speedSet){
+            snakeSpeed = 350;
+        }
+    }
     Snake snake(snakeSpeed, snakeBodySize);
     std::vector<SnakeBodyPiece> foodList;
     bool gameEnd = false;
