@@ -20,9 +20,10 @@ int keyUp = 265;
 int keyLeft = 263;
 int keyDown = 264;
 int keyRight = 262;
-std::mt19937_64 rndGen(time(NULL));
+std::mt19937_64 rndGen;
 
 int main(int argc, char** argv){
+    rndGen.seed(time(NULL));
     if(argc > 1){
         std::cout << "Command-line arguments example: -resolution 1280 960 -targetFps 60 -snakeSpeed 10 -snakeBodySize 20 -lengthGainPerFood 1 -foodAmount 1 -keys w a s d" << std::endl;
         std::cout << "Smaller speed value is faster in classic Snake, larger value is faster in modern Snake." << std::endl;
@@ -54,10 +55,10 @@ int main(int argc, char** argv){
             collisionSnakeLengthIgnored = std::atoi(argv[i+1]);
         }
         else if(std::strcmp(argv[i], "-keys") == 0 && argc > i+4){
-            keyUp = argv[i+1][0];
-            keyLeft = argv[i+2][0];
-            keyDown = argv[i+3][0];
-            keyRight = argv[i+4][0];
+            keyUp = std::toupper(argv[i+1][0]);
+            keyLeft = std::toupper(argv[i+2][0]);
+            keyDown = std::toupper(argv[i+3][0]);
+            keyRight = std::toupper(argv[i+4][0]);
         }
         else if(std::strcmp(argv[i], "-keysNumeric") == 0 && argc > i+4){
             keyUp = argv[i+1][0];

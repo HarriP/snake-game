@@ -72,13 +72,13 @@ float CheckInput(float currentDirection){
     return currentDirection;
 }
 
-class Pos{
+class Position{
 public:
     float x;
     float y;
-    Pos() : x(0), y(0) {}
-    Pos(float aX, float aY) : x(aX), y(aY) {}
-    bool WithinRange(const Pos& b, float diameter) const{
+    Position() : x(0), y(0) {}
+    Position(float aX, float aY) : x(aX), y(aY) {}
+    bool WithinRange(const Position& b, float diameter) const{
         if(hypot(b.x-x, b.y-y) < diameter){
             return true;
         }
@@ -86,102 +86,102 @@ public:
     }
 };
 
-Pos RandomPos(){
+Position RandomPosition(){
     float randomX = rndGen() % (resolutionX - borderPadding * 2 - snakeBodySize) + borderPadding + snakeBodySize / 2;
     float randomY = rndGen() % (resolutionY - borderPadding * 2 - snakeBodySize) + borderPadding + snakeBodySize / 2;
-    return Pos(randomX, randomY);
+    return Position(randomX, randomY);
 }
 
-Pos RandomInitPos(){
+Position RandomInitialPosition(){
     // resolutionX / 2 is because snake moves right initially, so it doesn't hit the wall when starting.
     float randomX = rndGen() % (resolutionX / 2) + borderPadding + snakeBodySize / 2;
     float randomY = rndGen() % (resolutionY - borderPadding * 2 - snakeBodySize) + borderPadding + snakeBodySize / 2;
-    return Pos(randomX, randomY);
+    return Position(randomX, randomY);
 }
 
 class SnakeBodyPiece{
 public:
-    Pos pos;
+    Position position;
     Color color;
-    SnakeBodyPiece(const Pos& aPos, const Color& aColor) : pos(aPos), color(aColor) {}
+    SnakeBodyPiece(const Position& aPosition, const Color& aColor) : position(aPosition), color(aColor) {}
 };
 
 class Snake{
 public:
     std::vector<SnakeBodyPiece> body;
-    float dir = 0;
+    float direction = 0;
     int speed;
     int bodySize;
     Snake(int aSpeed, int aBodySize) : speed(aSpeed), bodySize(aBodySize){
-        body.push_back(SnakeBodyPiece(RandomInitPos(), Color(0, 127, 255, 255)));
+        body.push_back(SnakeBodyPiece(RandomInitialPosition(), Color(0, 127, 255, 255)));
     }
     void Reset(){
         body.clear();
-        body.push_back(SnakeBodyPiece(RandomInitPos(), Color(0, 127, 255, 255)));
-        dir = 0;
+        body.push_back(SnakeBodyPiece(RandomInitialPosition(), Color(0, 127, 255, 255)));
+        direction = 0;
     }
     void Move(){
         for(int i=body.size()-1; i>0; i--){
-            body[i].pos = body[i-1].pos;
+            body[i].position = body[i-1].position;
         }
-        if(dir > pi*2){
-            dir -= pi*2;
+        if(direction > pi*2){
+            direction -= pi*2;
         }
-        else if(dir < -pi*2){
-            dir += pi*2;
+        else if(direction < -pi*2){
+            direction += pi*2;
         }
-        body[0].pos.x += cos(dir) * speed / 100;
-        body[0].pos.y += sin(dir) * speed / 100;
+        body[0].position.x += cos(direction) * speed / 100;
+        body[0].position.y += sin(direction) * speed / 100;
     }
     void Draw() const{
         for(const SnakeBodyPiece& p : body){
-            DrawCircle(p.pos.x, p.pos.y, bodySize/2, p.color);
+            DrawCircle(p.position.x, p.position.y, bodySize/2, p.color);
         }
     }
-    bool PosCollidesWithSnakeOrFood(const Pos& pos, const std::vector<SnakeBodyPiece>& foodList) const{
+    bool PositionCollidesWithSnakeOrFood(const Position& position, const std::vector<SnakeBodyPiece>& foodList) const{
         for(const SnakeBodyPiece& p : body){
-            if(p.pos.WithinRange(pos, bodySize)){
+            if(p.position.WithinRange(position, bodySize)){
                 return true;
             }
         }
         for(const SnakeBodyPiece& food : foodList){
-            if(food.pos.WithinRange(pos, bodySize)){
+            if(food.position.WithinRange(position, bodySize)){
                 return true;
             }
         }
         return false;
     }
-    Pos RandomPosOutsideSnakeAndFood(const std::vector<SnakeBodyPiece>& foodList) const{
+    Position RandomPositionOutsideSnakeAndFood(const std::vector<SnakeBodyPiece>& foodList) const{
         int tries = 0;
-        Pos pos = RandomPos();
-        while(PosCollidesWithSnakeOrFood(pos, foodList) && tries < 20){
-            pos = RandomPos();
+        Position position = RandomPosition();
+        while(PositionCollidesWithSnakeOrFood(position, foodList) && tries < 20){
+            position = RandomPosition();
             tries++;
         }
-        return pos;
+        return position;
     }
     bool CheckCollision(std::vector<SnakeBodyPiece>& foodList){
         if((int)foodList.size() < foodAmount){
-            foodList.push_back(SnakeBodyPiece(RandomPosOutsideSnakeAndFood(foodList), Color(255, 0, 0, 255)));
+            foodList.push_back(SnakeBodyPiece(RandomPositionOutsideSnakeAndFood(foodList), Color(255, 0, 0, 255)));
         }
         for(int i=0; i<(int)foodList.size(); i++){
-            if(body[0].pos.WithinRange(foodList[i].pos, bodySize)){
+            if(body[0].position.WithinRange(foodList[i].position, bodySize)){
                 for(int j=0; j<lengthGainPerFood; j++){
-                    body.push_back(SnakeBodyPiece(Pos(-1000, -1000), Color(0, 127, 255, 255)));
+                    body.push_back(SnakeBodyPiece(Position(-1000, -1000), Color(0, 127, 255, 255)));
                 }
                 foodList.erase(foodList.begin()+i);
                 i--;
             }
         }
         for(int i=collisionSnakeLengthIgnored; i<(int)body.size(); i++){
-            if(body[0].pos.WithinRange(body[i].pos, bodySize)){
+            if(body[0].position.WithinRange(body[i].position, bodySize)){
                 return true;
             }
         }
-        if(body[0].pos.x > resolutionX-borderPadding-bodySize/2 || body[0].pos.x < borderPadding+bodySize/2){
+        if(body[0].position.x > resolutionX-borderPadding-bodySize/2 || body[0].position.x < borderPadding+bodySize/2){
             return true;
         }
-        else if(body[0].pos.y > resolutionY-borderPadding-bodySize/2 || body[0].pos.y < borderPadding+bodySize/2){
+        else if(body[0].position.y > resolutionY-borderPadding-bodySize/2 || body[0].position.y < borderPadding+bodySize/2){
             return true;
         }
         return false;
@@ -216,10 +216,10 @@ void Game(int argc, char** argv){
         DrawText("Length: " + std::to_string(snake.body.size()), 150, 1, 20, Color(200, 200, 255, 255));
         snake.Draw();
         for(const SnakeBodyPiece& food : foodList){
-            DrawCircle(food.pos.x, food.pos.y, snake.bodySize/2, food.color);
+            DrawCircle(food.position.x, food.position.y, snake.bodySize/2, food.color);
         }
         if(!gameEnd){
-            snake.dir = CheckInput(snake.dir);
+            snake.direction = CheckInput(snake.direction);
             snake.Move();
             if(snake.CheckCollision(foodList)){
                 gameEnd = true;

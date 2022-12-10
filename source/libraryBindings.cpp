@@ -32,7 +32,7 @@ void EndDrawing(){
 }
 
 void ClearBackground(const Color& c){
-    Raylib::ClearBackground((Raylib::Color){c.r, c.g, c.b, c.a});
+    Raylib::ClearBackground({c.r, c.g, c.b, c.a});
 }
 
 void DrawFPS(int posX, int posY){
@@ -40,19 +40,19 @@ void DrawFPS(int posX, int posY){
 }
 
 void DrawText(const std::string& text, int posX, int posY, int fontSize, const Color& c){
-    Raylib::DrawText(text.c_str(), posX, posY, fontSize, (Raylib::Color){c.r, c.g, c.b, c.a});
+    Raylib::DrawText(text.c_str(), posX, posY, fontSize, {c.r, c.g, c.b, c.a});
 }
 
 void DrawSquare(int posX, int posY, int width, const Color& c){
-    Raylib::DrawRectangle(posX, posY, width, width, (Raylib::Color){c.r, c.g, c.b, c.a}); // Second width acts as height to draw a square.
+    Raylib::DrawRectangle(posX, posY, width, width, {c.r, c.g, c.b, c.a}); // Second width acts as height to draw a square.
 }
 
 void DrawCircle(int centerX, int centerY, float radius, const Color& c){
-    Raylib::DrawCircle(centerX, centerY, radius, (Raylib::Color){c.r, c.g, c.b, c.a});
+    Raylib::DrawCircle(centerX, centerY, radius, {c.r, c.g, c.b, c.a});
 }
 
 void DrawLine(int startPosX, int startPosY, int endPosX, int endPosY, const Color& c){
-    Raylib::DrawLine(startPosX, startPosY, endPosX, endPosY, (Raylib::Color){c.r, c.g, c.b, c.a});
+    Raylib::DrawLine(startPosX, startPosY, endPosX, endPosY, {c.r, c.g, c.b, c.a});
 }
 
 bool IsKeyPressed(int key){

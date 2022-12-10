@@ -1,6 +1,6 @@
-.PHONY = all clean
+.PHONY: all clean
 CXX = g++
-CXXFLAGS = -Wall -Wextra -O2 -static
+CXXFLAGS = -Wall -Wextra -pedantic -O2 -s
 LIB = RAYLIB
 
 ifeq ($(LIB),RAYLIB)
@@ -36,4 +36,4 @@ gameClassic.o: gameClassic.cpp game.h libraryBindings.cpp libraryBindings.h
 	$(CXX) $(CXXFLAGS) -o gameClassic.o -c gameClassic.cpp
 
 clean:
-	del Snake.exe SnakeClassic.exe main.o libraryBindings.o game.o gameClassic.o
+	rm Snake.exe SnakeClassic.exe main.o libraryBindings.o game.o gameClassic.o
