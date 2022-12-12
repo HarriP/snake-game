@@ -26,9 +26,10 @@ int main(int argc, char** argv){
     rndGen.seed(time(NULL));
     if(argc > 1){
         std::cout << "Command-line arguments example: -resolution 1280 960 -targetFps 60 -snakeSpeed 10 -snakeBodySize 20 -lengthGainPerFood 1 -foodAmount 1 -keys w a s d" << std::endl;
-        std::cout << "Smaller speed value is faster in classic Snake, larger value is faster in modern Snake." << std::endl;
-        std::cout << "-keysNumeric can also be used instead of -keys to give keys in numeric format, for example -keysNumeric 265 263 264 262 for arrow keys." << std::endl;
+        std::cout << "Smaller speed value is faster in classic Snake, larger value is faster in modern Snake.\nDefault snake speed is 350 in modern Snake, 7 in classic." << std::endl;
+        std::cout << "-keysNumeric can also be used instead of -keys to give keys in numeric format, for example -keysNumeric 265 263 264 262 for arrow keys. -keysNumeric 325 321 322 323 for numpad 5 1 2 3." << std::endl;
         std::cout << "Default keys are arrow keys and wasd. Press some direction key in the classic Snake to start moving." << std::endl;
+        std::cout << "To set mouse control enable key in modern Snake, use -mouseControlKey m for example. Default is 'm'. Or alternatively -mouseControlKeyNumeric (keycode number).\nUse same key to disable mouse control or press any direction keys." << std::endl;
         std::cout << "-collisionSnakeLengthIgnored sets the length of the snake counted from the head to ignore when checking collisions, to prevent the snake head from colliding with the body when moving straight (the body pieces overlap, especially at slow snake speeds). This is a tricky value to calculate with so many variables, so you can set it yourself if the collisions don't work properly. Increase it until the snake stops colliding with itself without you actually hitting yourself, or decrease it if the snake does not hit itself when it should. Only applies to the modern version." << std::endl << std::endl;
     }
     for(int i=1; i<argc; i++){
@@ -61,10 +62,10 @@ int main(int argc, char** argv){
             keyRight = std::toupper(argv[i+4][0]);
         }
         else if(std::strcmp(argv[i], "-keysNumeric") == 0 && argc > i+4){
-            keyUp = argv[i+1][0];
-            keyLeft = argv[i+2][0];
-            keyDown = argv[i+3][0];
-            keyRight = argv[i+4][0];
+            keyUp = std::atoi(argv[i+1]);
+            keyLeft = std::atoi(argv[i+2]);
+            keyDown = std::atoi(argv[i+3]);
+            keyRight = std::atoi(argv[i+4]);
         }
     }
     InitWindow(resolutionX, resolutionY, "Snake");

@@ -2,6 +2,8 @@
 
 Color::Color(unsigned char aR, unsigned char aG, unsigned char aB, unsigned char aA) : r(aR), g(aG), b(aB), a(aA){}
 
+Vector2::Vector2(float aX, float aY) : x(aX), y(aY) {}
+
 #ifdef RAYLIB
 namespace Raylib{
     #include "raylib.h"
@@ -69,6 +71,24 @@ bool IsKeyDown(int key){
 
 bool IsKeyUp(int key){
     return Raylib::IsKeyUp(key);
+}
+
+int GetMouseX(){
+    return Raylib::GetMouseX();
+}
+
+int GetMouseY(){
+    return Raylib::GetMouseY();
+}
+
+Vector2 GetMousePosition(){
+    Raylib::Vector2 vector = Raylib::GetMousePosition();
+    return Vector2(vector.x, vector.y);
+}
+
+Vector2 GetMouseDelta(){
+    Raylib::Vector2 vector = Raylib::GetMouseDelta();
+    return Vector2(vector.x, vector.y);
 }
 #elif defined(SDL2)
 #endif

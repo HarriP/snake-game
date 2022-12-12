@@ -9,6 +9,13 @@ public:
     Color(unsigned char aR, unsigned char aG, unsigned char aB, unsigned char aA);
 };
 
+class Vector2{
+public:
+    float x;
+    float y;
+    Vector2(float aX, float aY);
+};
+
 void InitWindow(int resolutionX, int resolutionY, const char* windowTitle);
 void CloseWindow();
 bool WindowShouldClose();
@@ -25,6 +32,10 @@ bool IsKeyPressed(int key);
 bool IsKeyReleased(int key);
 bool IsKeyDown(int key);
 bool IsKeyUp(int key);
+int GetMouseX();
+int GetMouseY();
+Vector2 GetMousePosition();
+Vector2 GetMouseDelta();
 
 // Raylib code
 // Keyboard keys

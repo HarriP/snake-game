@@ -2,6 +2,7 @@
 #include <vector>
 #include <queue>
 #include <random>
+#include <algorithm>
 #include <cstring>
 #include <cmath>
 #include "libraryBindings.h"
@@ -20,7 +21,26 @@ extern int keyUp;
 extern int keyLeft;
 extern int keyDown;
 extern int keyRight;
+int keyMouseControl = 'M';
 extern std::mt19937_64 rndGen;
+
+class Position{
+public:
+    float x;
+    float y;
+    Position() : x(0), y(0) {}
+    Position(float aX, float aY) : x(aX), y(aY) {}
+    explicit Position(Vector2 vector) : x(vector.x), y(vector.y) {}
+    bool WithinRange(const Position& b, float diameter) const{
+        if(hypot(b.x-x, b.y-y) < diameter){
+            return true;
+        }
+        return false;
+    }
+    float GetDirectionTo(const Position& targetPosition) const{
+        return std::atan2(targetPosition.y-y, targetPosition.x-x);
+    }
+};
 
 enum class Direction{
     None,
@@ -58,33 +78,36 @@ bool ButtonPressed(Direction dir){
     return false;
 }
 
-float CheckInput(float currentDirection){
+float CheckInput(float currentDirection, const Position& snakePosition){
+    static bool mouseControl = false;
     if(ButtonPressed(Direction::Up)){
+        mouseControl = false;
     }
     else if(ButtonPressed(Direction::Left)){
+        mouseControl = false;
         return currentDirection - 0.08f;
     }
     else if(ButtonPressed(Direction::Down)){
+        mouseControl = false;
     }
     else if(ButtonPressed(Direction::Right)){
+        mouseControl = false;
         return currentDirection + 0.08f;
+    }
+    else if(IsKeyPressed(keyMouseControl)){
+        mouseControl = !mouseControl;
+    }
+    if(mouseControl){
+        float newDirection = snakePosition.GetDirectionTo(Position(GetMousePosition()));
+        float difference = newDirection - currentDirection;
+        float sign = std::abs(difference) <= pi ? -1 : 1;
+        if(difference > 0){
+            sign = std::abs(difference) <= pi ? 1 : -1;
+        }
+        return currentDirection + sign * std::min(std::abs(difference), 0.08f);
     }
     return currentDirection;
 }
-
-class Position{
-public:
-    float x;
-    float y;
-    Position() : x(0), y(0) {}
-    Position(float aX, float aY) : x(aX), y(aY) {}
-    bool WithinRange(const Position& b, float diameter) const{
-        if(hypot(b.x-x, b.y-y) < diameter){
-            return true;
-        }
-        return false;
-    }
-};
 
 Position RandomPosition(){
     float randomX = rndGen() % (resolutionX - borderPadding * 2 - snakeBodySize) + borderPadding + snakeBodySize / 2;
@@ -124,10 +147,10 @@ public:
         for(int i=body.size()-1; i>0; i--){
             body[i].position = body[i-1].position;
         }
-        if(direction > pi*2){
+        if(direction > pi){
             direction -= pi*2;
         }
-        else if(direction < -pi*2){
+        else if(direction < -pi){
             direction += pi*2;
         }
         body[0].position.x += cos(direction) * speed / 100;
@@ -195,6 +218,12 @@ void Game(int argc, char** argv){
             if(std::strcmp(argv[i], "-snakeSpeed") == 0 && argc > i+1){
                 speedSet = true;
             }
+            else if(std::strcmp(argv[i], "-mouseControlKey") == 0 && argc > i+1){
+                keyMouseControl = std::toupper(argv[i+1][0]);
+            }
+            else if(std::strcmp(argv[i], "-mouseControlKeyNumeric") == 0 && argc > i+1){
+                keyMouseControl = std::atoi(argv[i+1]);
+            }
         }
         if(!speedSet){
             snakeSpeed = 350;
@@ -219,7 +248,7 @@ void Game(int argc, char** argv){
             DrawCircle(food.position.x, food.position.y, snake.bodySize/2, food.color);
         }
         if(!gameEnd){
-            snake.direction = CheckInput(snake.direction);
+            snake.direction = CheckInput(snake.direction, snake.body[0].position);
             snake.Move();
             if(snake.CheckCollision(foodList)){
                 gameEnd = true;
